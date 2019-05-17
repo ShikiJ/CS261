@@ -139,8 +139,38 @@ int sizeBSTree(struct BSTree *tree) { return tree->cnt; }
  */
 struct Node *_addNode(struct Node *cur, TYPE val)
 {
+  if(compare(cur->val,val)<0.5)
+  { // new value is larger the current node 
+    if(current->right ==0)
+    { // fire the hasNext check, and if right is indeed empty, fire up the add 
+      struct Node* newNode = malloc(sizeof(struct Node));
+      newNode->val = val; 
+      newNode->left = 0; 
+      newNode->right = 0; 
+      cur->right =newNode; 
+    }
+    else 
+    { // if the current has right node, the recurive _addNode with cur->right;  
+      _addNode(cur->right, val); 
+    }
+  }
+  else 
+  { // new value is smaller then the current node 
+    if (cur->left == 0)
+    {// fire the hasNext check on the left branch and is indeed is empty fire up the add  
+      struct Node* newNode = malloc(sizeof(struct Node));
+      newNode->val = val; 
+      newNode->left = 0; 
+      newNode->right = 0; 
+      cur->left =newNode; 
+    }
+    else 
+    { // recursive call the _addNode with cur->left  
+     _addNode(cur->left, val); 
+    }
+  }
     /*write this*/
-    return NULL;
+    return cur; // return the updated root 
 }
 
 /*

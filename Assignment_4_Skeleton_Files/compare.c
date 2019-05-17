@@ -26,7 +26,14 @@
 int compare(TYPE left, TYPE right)
 {
     /*FIXME: write this*/
-	return 0;
+	if (left>right){
+      return -1;
+  }
+  else if(left < right) {
+    return 1; 
+  }
+  else
+    return 0;
 
 }
 
