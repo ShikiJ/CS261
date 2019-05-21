@@ -138,8 +138,31 @@ int sizeBSTree(struct BSTree *tree) { return tree->cnt; }
  pre:	val is not null
  */
 struct Node *_addNode(struct Node *cur, TYPE val)
-{
-  if(compare(cur->val,val)<0.5)
+{	//basecase 
+	if (cur == 0){
+	struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+	
+	assert(newNode != 0);
+	newNode->left = 0; 
+	newNode ->right = 0; 
+	// not sure whta kind of data casting is needed here 
+	//no need becaue the TYPE val and this->val are all TYPE void *... 
+	newNode -> val = val; 
+	}
+	// cur->val larger than val;going to the left branch
+	else if ((compare(cur->val,val)<0.5))
+	{
+		cur->left = _addNode(cur->left, val);
+	}
+	else {
+		cur->right =_addNode(cur->right, val);
+	}
+	return cur; 
+	// both val and curval are void pointer to struct data*  
+	//TYPE curval = cur->val; 	
+}
+/*
+ * if(compare(cur->val,val)<0.5)
   { // new value is larger the current node 
     if(current->right ==0)
     { // fire the hasNext check, and if right is indeed empty, fire up the add 
@@ -168,10 +191,11 @@ struct Node *_addNode(struct Node *cur, TYPE val)
     { // recursive call the _addNode with cur->left  
      _addNode(cur->left, val); 
     }
-  }
-    /*write this*/
-    return cur; // return the updated root 
-}
+  }  
+     	return cur; // return the updated root 
+*/
+
+
 
 /*
  function to add a value to the binary search tree
@@ -204,6 +228,25 @@ element
 /*----------------------------------------------------------------------------*/
 int containsBSTree(struct BSTree *tree, TYPE val)
 {
+	assert(tree !=0);
+	assert(val !=0);
+	struct Node*  cur = tree->root;  
+	do
+	{
+		if (compare(cur->val, val) == 0)
+		{
+			return 1; 
+		}
+		else if (compare(cur->val, val) == -1)
+		{
+			cur = cur->left; 
+		}
+		else if (compare(cur->val, val) == 1)
+		{
+			cur = cur->right; 
+		}
+	}while (cur != 0); 
+	
     /*write this*/
     return 0;
 }
@@ -219,13 +262,27 @@ int containsBSTree(struct BSTree *tree, TYPE val)
 /*----------------------------------------------------------------------------*/
 TYPE _leftMost(struct Node *cur)
 {
+	assert(cur != 0);
+	while (cur !=0)
+	{
+		cur = cur->left;
+	}
+	return cur->val;
+	// if the right subnode has no child then right subnode itself should be used to replace target 
     /*write this*/
-    return NULL;
+	/*if (cur->left == 0)
+		//this include no subchild at all and all subchild is rightchild 
+		{
+			return cur->val; 
+		}
+	else {
+		cur->left = _leftMost(cur->left);
+	}*/	
 }
 
 
 /*
- recursive helper function to remove the left most child of a node
+ recursive helpe r function to remove the left most child of a node
  HINT: this function returns cur if its left child is NOT NULL. Otherwise,
  it returns the right child of cur and free cur.
 
@@ -238,8 +295,22 @@ Note:  If you do this iteratively, the above hint does not apply.
 /*----------------------------------------------------------------------------*/
 struct Node *_removeLeftMost(struct Node *cur)
 {
+	// reursive step identical to _leftMost(); BUT need to take care of whatis left behind 
+	assert(cur != 0);
+	if (cur->left == 0)
+		//this include no subchild at all and all subchild is rightchild 
+		{
+			struct Node* temp = cur->right; 
+			free(cur); 
+			return temp; 
+		}
+	else {
+		// important! something must be here to recieve this recursive cal! 
+
+		cur->left=_removeLeftMost(cur->left);
+	}	
+	return cur;
     /*write this*/
-    return NULL;
 }
 /*
  recursive helper function to remove a node from the tree
@@ -252,9 +323,41 @@ struct Node *_removeLeftMost(struct Node *cur)
 /*----------------------------------------------------------------------------*/
 struct Node *_removeNode(struct Node *cur, TYPE val)
 {
+	
+	// step 1 is to locate this node, and we already sure it exist
+	assert(cur !=0);
+	assert(val !=0);
+	// cur is root  	
+		if (compare(cur->val, val) == 0)
+		{
+		if (cur->right ==0)
+		{
+			struct Node* temp = cur->left; 
+			free(cur);
+			return temp; 
+		}
+		else {
+			cur->val =_leftMost(cur->right); 
+			cur->right = _removeLeftMost(cur->right);
+		}
+		
+		//  keep the sructure just change the data... 
+		//free(cur->val);
+		//cur->val = _leftMost(cur->right); 
+		//	
+		}
+		else if (compare(cur->val, val) == -1)
+		{
+			cur->left = _removeNode(cur->left, val); 
+		}
+		else if (compare(cur->val, val) == 1)
+		{
+			cur->right = _removeNode(cur->right, val);
+		}
+	
     /*write this*/
-    return NULL;
-
+    
+	return cur; 
 }
 /*
  function to remove a value from the binary search tree

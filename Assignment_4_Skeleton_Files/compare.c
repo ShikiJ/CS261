@@ -25,11 +25,14 @@
  */
 int compare(TYPE left, TYPE right)
 {
-    /*FIXME: write this*/
-	if (left>right){
+	/*FIXME: write this*/
+	struct data* leftD = (struct data*)left;
+	struct data* rightD = (struct data*)right;
+	 
+	if (leftD->number > rightD->number){
       return -1;
   }
-  else if(left < right) {
+  else if(leftD->number < rightD->number) {
     return 1; 
   }
   else
@@ -40,7 +43,9 @@ int compare(TYPE left, TYPE right)
 /*Define this function, type casting the value of void * to the desired type*/
 void print_type(TYPE curval)
 {
+	struct data* cat = (struct data*)curval; 
     /*FIXME: write this*/
+	printf("%d",cat->number); 
 
 }
 
