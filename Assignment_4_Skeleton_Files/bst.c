@@ -148,7 +148,8 @@ struct Node *_addNode(struct Node *cur, TYPE val)
 	// not sure whta kind of data casting is needed here 
 	//no need becaue the TYPE val and this->val are all TYPE void *... 
 	newNode -> val = val; 
-	}
+	cur = newNode;
+  }
 	// cur->val larger than val;going to the left branch
 	else if ((compare(cur->val,val)<0.5))
 	{
@@ -263,21 +264,23 @@ int containsBSTree(struct BSTree *tree, TYPE val)
 TYPE _leftMost(struct Node *cur)
 {
 	assert(cur != 0);
-	while (cur !=0)
+	/*
+  while (cur !=0)
 	{
 		cur = cur->left;
 	}
 	return cur->val;
-	// if the right subnode has no child then right subnode itself should be used to replace target 
+	*/
+  // if the right subnode has no child then right subnode itself should be used to replace target 
     /*write this*/
-	/*if (cur->left == 0)
+	if (cur->left == 0)
 		//this include no subchild at all and all subchild is rightchild 
 		{
 			return cur->val; 
 		}
 	else {
-		cur->left = _leftMost(cur->left);
-	}*/	
+cur= _leftMost(cur->left);
+	}	
 }
 
 
@@ -650,19 +653,19 @@ int main(int argc, char *argv[]){
    /* After implementing your code, you must uncomment the following calls to the test functions and test your code. Otherwise, you will not receive any 
 points */
 
-  	//testAddNode();
+  	testAddNode();
 	
 	printf("\n");
-  	//testContainsBSTree();
+  	testContainsBSTree();
 	
 	printf("\n");
-       //testLeftMost();
+       testLeftMost();
 	
 	printf("\n");
-    //testRemoveLeftMost();
+    testRemoveLeftMost();
 	
 	printf("\n");
-    //testRemoveNode();
+    testRemoveNode();
     
 	
 	return 0;
