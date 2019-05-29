@@ -205,18 +205,26 @@ void resizeTable(HashMap* map, int capacity)
  * @param value
  */
 void hashMapPut(HashMap* map, const char* key, int value)
-{   // Warning: Not sure what does update only the value and skip the travelsing mean when value already exist in the hash map 
+{   
+	
+	//Done 
+
+	// Warning: Not sure what does update only the value and skip the travelsing mean when value already exist in the hash map 
     //assume do nothing when exist
     // FIXME: implement
     //1. figure out if key is in the hashmap 
     //2. if not, add to the front of the link 
+    
     if(hashMapContainsKey(key))
     {
-        *(hashMapGet(map, key))=value;
+	int * temp = hashMapGet(map,key); 
+        *temp =value;
         // hashMapGet returns int pointer to the value stored in that pairs, thus dereference it first and change it to vlaue 
     }
     else {
-        
+	    int hashNum = HASH_FUNCTION(key) % map->capacity; 
+	    struct HashLink* newLink = hashLinkNew(key, value,map->table[hashNum]);
+    	    map->table[hashNum] = newLink; 
     }
 }
 
@@ -229,7 +237,30 @@ void hashMapPut(HashMap* map, const char* key, int value)
  */
 void hashMapRemove(HashMap* map, const char* key)
 {
-    // FIXME: implement
+	// Done 
+   // 1. find the wether the key exist 
+   // 2. if yes, go to that bucket and loop through the entire list 
+   // 3. call function to remove the link 
+   // 4. problem how to relink the rest of the list? need next of prevL and addr of nextL 
+	// *** I don't know how to relink the list so I will delete the back of the list instead        
+   // FIXME: implement
+	if (hashMapContainsKey(map))
+	{
+		int hashNum = HASH_FUNCTION(key)%map->capacity; 
+		struct HashLink * cur= map->table[hashNum]; 
+		struct HashLink *front = map->table[hashNum]; 
+		struct HashLink *second = front->next;
+		while(cur !=0){
+			if(strcmp(cur->key,key)){
+				cur->key = front->key; 
+				cur->value = front->value; 
+			// overwrite cur to data in front 
+				map->table[hashNum]=second; 
+				hashLinkDelete(front); 
+			//delete the front link 
+			}
+		}
+	}
 }
 
 /**
