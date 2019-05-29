@@ -141,7 +141,7 @@ int* hashMapGet(HashMap* map, const char* key)
 {   
     //Done 
     // assume using hashFunction1(); 
-    int hashNum = hashFunction1(key)%map->capacity;
+    int hashNum = HASH_FUNCTION(key)%map->capacity;
     struct HashLink* cur = map->table[hashNum]; 
     while (cur != 0){
       if(strcmp(cur->key,key))
