@@ -29,7 +29,7 @@ struct HashMap
 };
 
 HashMap* hashMapNew(int capacity);
-void hashMapDelete(HashMap* map);
+void hashMapDelete(HashMap* map); // given
 int* hashMapGet(HashMap* map, const char* key);
 void hashMapPut(HashMap* map, const char* key, int value);
 void hashMapRemove(HashMap* map, const char* key);
