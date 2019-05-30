@@ -169,26 +169,32 @@ int* hashMapGet(HashMap* map, const char* key)
  */
 void resizeTable(HashMap* map, int capacity)
 {
-    //NOT  DONE YET 
+  //  DONE
     // FIXME: implement
     // 1. create a new table 
-    struct HashLink** newTable = malloc(sizeof(HashLink*) * capacity);
-    for (int i = 0; i < capacity; i++)
-    {
-        newTable[i] = NULL;
-    }
-    //2. rehash everything 
-    // 2.1 read from the old table into the junk and then delete junk 
-    struct HashLink* next; 
-    int rehashNum; 
+     /*
+    based on functiuon must creayte a new linkmap instrad of just a table 
+     */
+    struct HashMap* newMap = malloc(sizeof(struct HashMap));
+    hashMapInit(newMap,capacity);
 
-    for(int i = 0; i < map->capacity; i++){
-    struct HashLink* junk = map->table[i]; 
-    while(junk !=0){
-      rehashNum =  hashFunction1(junk->key)%capacity;
-      newTable[rehashNum] = // add Hash link to table 
+    //2. rehash everything 
+    struct HashLink* temp;
+//    int newHashNum;
+    for(int i =0; i < map->capacity; i++)
+    {
+      temp = map->table[i];
+      while (temp !=0)
+      {
+      //    newHashNum = HASH_FUNCTION(temp-key)%capacity; 
+          hashMapPut(newMap, temp->key, temp->value);
+          temp = temp->next; 
+      }
     }
-    }
+
+    //3, delete old hashMap, direct the old pointer to new struct 
+    hashMapDelete(map);
+    map = newMap; 
 }
 
 /**
@@ -215,16 +221,17 @@ void hashMapPut(HashMap* map, const char* key, int value)
     //1. figure out if key is in the hashmap 
     //2. if not, add to the front of the link 
     
-    if(hashMapContainsKey(key))
+    if(hashMapContainsKey(map,key))
     {
-	int * temp = hashMapGet(map,key); 
+	      int * temp = hashMapGet(map,key); 
         *temp =value;
         // hashMapGet returns int pointer to the value stored in that pairs, thus dereference it first and change it to vlaue 
     }
     else {
 	    int hashNum = HASH_FUNCTION(key) % map->capacity; 
 	    struct HashLink* newLink = hashLinkNew(key, value,map->table[hashNum]);
-    	    map->table[hashNum] = newLink; 
+    	map->table[hashNum] = newLink; 
+      map->size++;
     }
 }
 
@@ -244,7 +251,7 @@ void hashMapRemove(HashMap* map, const char* key)
    // 4. problem how to relink the rest of the list? need next of prevL and addr of nextL 
 	// *** I don't know how to relink the list so I will delete the back of the list instead        
    // FIXME: implement
-	if (hashMapContainsKey(map))
+	if (hashMapContainsKey(map,key))
 	{
 		int hashNum = HASH_FUNCTION(key)%map->capacity; 
 		struct HashLink * cur= map->table[hashNum]; 
@@ -260,7 +267,8 @@ void hashMapRemove(HashMap* map, const char* key)
 			//delete the front link 
 			}
 		}
-	}
+	  map->size--;
+  }
 }
 
 /**
@@ -279,10 +287,10 @@ int hashMapContainsKey(HashMap* map, const char* key)
     // FIXME: implement
     //1. hash the key into value and locate table bucket 
     //2. travels through bucket and find key 
-    int hashNum = hashFunction1(key)%map->capacity;
+    int hashNum =HASH_FUNCTION(key)%map->capacity;
     struct HashLink* cur = map->table[hashNum]; 
     while (cur != 0){
-      if(strcmp(cur->key,key))
+      if(!strcmp(cur->key,key))
       {
          return 1; 
       }
@@ -362,14 +370,16 @@ void hashMapPrint(HashMap* map)
   struct HashLink* cur = NULL; 
   for(int i =0; i< map->capacity; i++)
   {
+       printf("\n");
        cur = map->table[i]; 
+       printf("In bucket %d : ", i);
        while(cur != NULL)
        {
-           printf("%c ", cur->key);
-           printf("%d ",cur->value);
+           printf("(%s, ", cur->key);
+           printf("%d) ",cur->value);
            cur = cur->next;
        }
-       prinft("\n");
+      // printf("-----------");
       // else {//do nothing }
   }
    
