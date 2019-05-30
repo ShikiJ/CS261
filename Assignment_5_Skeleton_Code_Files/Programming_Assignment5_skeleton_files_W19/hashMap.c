@@ -146,11 +146,12 @@ int* hashMapGet(HashMap* map, const char* key)
     while (cur != 0){
       if(strcmp(cur->key,key))
       {
-         return &cur->value; 
+	 //     printf("looping");
+         cur =cur->next;
       }
      else{
-          cur =cur->next;
-      }
+        //	printf("contain function exist ");
+	     return &cur->value;       }
     }
     // FIXME: implement
     return NULL;
@@ -223,15 +224,16 @@ void hashMapPut(HashMap* map, const char* key, int value)
     
     if(hashMapContainsKey(map,key))
     {
-	      int * temp = hashMapGet(map,key); 
-        *temp =value;
-        // hashMapGet returns int pointer to the value stored in that pairs, thus dereference it first and change it to vlaue 
-    }
-    else {
-	    int hashNum = HASH_FUNCTION(key) % map->capacity; 
-	    struct HashLink* newLink = hashLinkNew(key, value,map->table[hashNum]);
-    	map->table[hashNum] = newLink; 
-      map->size++;
+// hashMapGet returns int pointer to the value stored in that pairs, thus dereference it first and change it to vlaue 
+	 int * temp = hashMapGet(map,key); 
+        *temp =value;   }
+    else 
+    {
+	 int hashNum = HASH_FUNCTION(key) % map->capacity; 
+	 struct HashLink* newLink = hashLinkNew(key, value,map->table[hashNum]);
+    	 map->table[hashNum] = newLink; 
+         map->size++;
+ 	
     }
 }
 
@@ -257,18 +259,29 @@ void hashMapRemove(HashMap* map, const char* key)
 		struct HashLink * cur= map->table[hashNum]; 
 		struct HashLink *front = map->table[hashNum]; 
 		struct HashLink *second = front->next;
-		while(cur !=0){
-			if(strcmp(cur->key,key)){
-				cur->key = front->key; 
+		while(cur !=0)
+		{
+			if(strcmp(cur->key,key))
+			{
+		//	printf("Forget to move cur silly buff!!! and how does this caused a null ptr for get function?!?!");
+			cur=cur->next;}
+			else 
+			{	free(cur->key);
+				cur->key = malloc(strlen(front->key)+1);
+			       	strcpy(cur->key,front->key);
 				cur->value = front->value; 
 			// overwrite cur to data in front 
 				map->table[hashNum]=second; 
 				hashLinkDelete(front); 
 			//delete the front link 
+				 map->size--;
+		//		 printf("\n--------------\n");
+		//		 hashMapPrint(map);
+		//		 printf("\n-------------\n");
 			}
 		}
-	  map->size--;
-  }
+	 
+  	}
 }
 
 /**
@@ -289,14 +302,16 @@ int hashMapContainsKey(HashMap* map, const char* key)
     //2. travels through bucket and find key 
     int hashNum =HASH_FUNCTION(key)%map->capacity;
     struct HashLink* cur = map->table[hashNum]; 
-    while (cur != 0){
-      if(!strcmp(cur->key,key))
+    while (cur != 0)
+    {
+      if(strcmp(cur->key,key))
       {
-         return 1; 
-      }
-     else{
           cur =cur->next;
       }
+     else
+     {
+         return 1; 
+     }
     }
     return 0;
 }
@@ -312,7 +327,6 @@ int hashMapSize(HashMap* map)
     // FIXME: implement
     return map->size;
 }
-
 /**
  * Returns the number of buckets in the table.
  * @param map
@@ -368,7 +382,7 @@ void hashMapPrint(HashMap* map)
 {
   // FIXME: implement
   struct HashLink* cur = NULL; 
-  for(int i =0; i< map->capacity; i++)
+  for(int i =0; i< (int)(map->capacity); i++)
   {
        printf("\n");
        cur = map->table[i]; 
@@ -378,9 +392,11 @@ void hashMapPrint(HashMap* map)
            printf("(%s, ", cur->key);
            printf("%d) ",cur->value);
            cur = cur->next;
+//	   printf("while loop");
        }
-      // printf("-----------");
+//    printf("%d",(int)map->capacity);
+  
       // else {//do nothing }
   }
-   
+ // printf("end of print func"); 
 }

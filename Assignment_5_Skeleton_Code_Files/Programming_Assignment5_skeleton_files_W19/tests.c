@@ -134,13 +134,16 @@ void testCase(CuTest* test, HashLink* links, const char** notKeys, int numLinks,
     // Print table
     printf("\nAfter adding all key-value pairs:");
     hashMapPrint(map);
+ 	printf("-----");
+  
     
     // Check size
     CuAssertIntEquals(test, numLinks, hashMapSize(map));
     
     // Check capacity
     CuAssertIntEquals(test, map->capacity, hashMapCapacity(map));
-    
+
+
     // Check empty buckets
     int sum = 0;
     for (int i = 0; i < map->capacity; i++)
