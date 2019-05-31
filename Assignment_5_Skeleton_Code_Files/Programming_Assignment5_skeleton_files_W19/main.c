@@ -46,7 +46,15 @@ char* nextWord(FILE* file)
         return NULL;
     }
     word[length] = '\0';
-    return word;
+	
+	int len= strlen(word);
+    char * lowerWord = (char*)malloc(len+1);
+	lowerWord[len] = '\0';
+	for(int i =0; i < len; i++)
+	{
+		lowerWord[i] = tolower(word[i]);
+	}
+	return lowerWord;
 }
 
 /**
@@ -70,7 +78,36 @@ int main(int argc, const char** argv)
     clock_t timer = clock();
     
     HashMap* map = hashMapNew(10);
+   
+    char *word; 
+
+    FILE* fptr; 
+    fptr =fopen(fileName,"r");
     
+	word = nextWord(fptr);
+    while(word != 0)
+    {
+	 //   printf("int the loop ");
+//   printf(" \n %s ",word);
+//  	printf(" \n add word to hashMap");
+	// 1. chekc if contains yes, value = hashMGet(); not value =0; 
+	//2. hashMapPut(map,key, value)
+	int value = 1 ; 
+	
+	if (hashMapContainsKey(map,word))
+	{
+		value = *hashMapGet(map,word) + 1; 
+	}
+	hashMapPut(map, word,value);
+	
+	word = nextWord(fptr);
+    }
+ //   fscanf(fptr, "%s", str); 
+ //   printf("%s",str);
+    hashMapPrint(map);
+	free(word);
+	fclose(fptr);
+
     // --- Concordance code begins here ---
     // Be sure to free the word after you are done with it here.
     // --- Concordance code ends here ---

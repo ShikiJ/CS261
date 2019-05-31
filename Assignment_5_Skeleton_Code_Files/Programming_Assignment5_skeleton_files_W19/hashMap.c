@@ -389,7 +389,7 @@ void hashMapPrint(HashMap* map)
        printf("In bucket %d : ", i);
        while(cur != NULL)
        {
-           printf("(%s, ", cur->key);
+           printf("-> (%s, ", cur->key);
            printf("%d) ",cur->value);
            cur = cur->next;
 //	   printf("while loop");
