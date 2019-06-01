@@ -43,8 +43,17 @@ char* nextWord(FILE* file)
         free(word);
         return NULL;
     }
+
     word[length] = '\0';
-    return word;
+    
+    int len = strlen(word);
+    char * lower = (char*)malloc(len+1);
+    lower[len]='\0';
+    for (int i =0; i < len; i++)
+    {
+        lower[i] = tolower(word[i]);
+    }
+    return lower;
 }
 
 /**
@@ -55,6 +64,18 @@ char* nextWord(FILE* file)
 void loadDictionary(FILE* file, HashMap* map)
 {
     // FIXME: implement
+    char * word = nextWord(file);
+    while (word !=0)
+    {
+        // if we hash the dictionary we need to 1. hash very word until the end of file 
+        // 2. give dummy value
+        // we don;t even need to check repeat
+        int value = 1000;
+        hashMapPut(map, word, value);
+        word = nextWord(file); 
+        // test 
+    }
+
 }
 
 /**
@@ -75,6 +96,8 @@ int main(int argc, const char** argv)
     loadDictionary(file, map);
     timer = clock() - timer;
     printf("Dictionary loaded in %f seconds\n", (float)timer / (float)CLOCKS_PER_SEC);
+    //test
+    //hashMapPrint(map);
     fclose(file);
     
     char inputBuffer[256];
@@ -86,6 +109,7 @@ int main(int argc, const char** argv)
         
         // Implement the spell checker code here..
         
+
         if (strcmp(inputBuffer, "quit") == 0)
         {
             quit = 1;
